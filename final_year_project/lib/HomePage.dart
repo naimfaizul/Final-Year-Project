@@ -154,13 +154,13 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   new Container(
-                    height: 200,
+                    height: 150,
                     padding: new EdgeInsets.only(top: 10.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         new Container(
-                          padding: new EdgeInsets.only(bottom: 150),
+                          padding: new EdgeInsets.only(bottom: 100),
                           child: Text(
                             'Attendance',
                             style: TextStyle(
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.only(top: 50),
+                                margin: EdgeInsets.only(top: 0),
                                 child: Column(
                                   children: <Widget>[
                                     FlatButton(
@@ -225,12 +225,13 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   new Container(
-                    height: 200,
+                    height: 150,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
                           child: new Padding(
-                            padding: const EdgeInsets.only(top: 50.0),
+                            padding: const EdgeInsets.only(top: 30.0),
                             child: Column(
                               children: <Widget>[
                                 FlatButton(
@@ -248,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Expanded(
                           child: new Padding(
-                            padding: const EdgeInsets.only(top: 50.0),
+                            padding: const EdgeInsets.only(top: 30.0),
                             child: Column(
                               children: <Widget>[
                                 FlatButton(
@@ -266,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Expanded(
                           child: new Padding(
-                            padding: const EdgeInsets.only(top: 50.0),
+                            padding: const EdgeInsets.only(top: 30.0),
                             child: Column(
                               children: <Widget>[
                                 FlatButton(
