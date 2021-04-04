@@ -33,6 +33,7 @@ dependencies:
   firebase_core: ^0.5.3
   google_sign_in: ^4.5.9
   carousel_slider: ^3.0.0
+  flutter_swiper: ^1.1.6
 
 dev_dependencies:
   flutter_test:
