@@ -1,3 +1,5 @@
+import 'package:final_year_project/HomePage.dart';
+import 'package:final_year_project/quiz/Quiz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
@@ -7,62 +9,126 @@ class SelectQuiz extends StatefulWidget {
 }
 
 class _SelectQuizState extends State<SelectQuiz> {
-  List<String> _images = List();
-  List<String> _header = List();
-  @override
-  void initState() {
-    _images..add('assets/quiz.jpg');
-    _header..add('First Image');
-    super.initState();
+  navigateToHomePage() async {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
-  Widget _customScrollView() {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-          expandedHeight: 250.0,
-          floating: false,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              background: Swiper(
-                itemCount: _images.length,
-                itemBuilder: (BuildContext context, int index) => Image.asset(
-                  _images[index],
-                  fit: BoxFit.cover,
-                ),
-                autoplay: true,
-              )),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-              (context, index) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 75,
-                      color: Colors.black12,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {},
-                            child: Text('Topic $index'),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-              childCount: 10),
-        )
-      ],
-    );
+  navigateToTakeQuiz() async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Quiz()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _customScrollView(),
+      appBar: AppBar(
+        title: Text('Quiz'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(top: 50),
+                    width: 150.0,
+                    height: 150.0,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('assets/result.png'),
+                            fit: BoxFit.fill)),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 20),
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          'Your Previous Result :',
+                          style: TextStyle(fontSize: 25),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          '10/10',
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 50,
+                        width: 300,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      side: BorderSide(color: Colors.green)))),
+                          onPressed: navigateToTakeQuiz,
+                          child: Text(
+                            'Take New Quiz',
+                            style:
+                                TextStyle(fontSize: 20.0, color: Colors.green),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 300,
+                        height: 50,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.green),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      side: BorderSide(color: Colors.green)))),
+                          onPressed: navigateToHomePage,
+                          child: Text(
+                            'Back',
+                            style:
+                                TextStyle(fontSize: 20.0, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
