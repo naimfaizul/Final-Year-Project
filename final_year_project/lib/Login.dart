@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'HomePage.dart';
+import 'package:http/http.dart' as http;
+import 'globals.dart' as globals;
 import 'package:firebase_core/firebase_core.dart';
 import 'Start.dart';
 
@@ -48,16 +52,21 @@ class _LoginState extends State<Login> {
   //   }
   // }
   login() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-
-      try {
-        await _auth.signInWithEmailAndPassword(
-            email: _email, password: _password);
-      } catch (e) {
-        showError(e.message);
-        print(e);
-      }
+    print(_email);
+    print(_password);
+    var response = await http.post(Uri.parse('http://10.0.2.2:8000/api/login'),
+        body: {"email": _email, "password": _password});
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Login Success!"),
+      ));
+      globals.email = _email;
+      globals.name = json.decode(response.body)["data"]["name"];
+      navigateToHomePage();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Invalid credentials! Please try again..."),
+      ));
     }
   }
 
@@ -107,15 +116,17 @@ class _LoginState extends State<Login> {
                             ),
                             child: TextFormField(
                                 decoration: InputDecoration(
-                              prefixIcon: const Icon(
-                                Icons.email,
-                                color: Colors.grey,
-                              ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide(color: Colors.black)),
-                              labelText: 'Email',
-                            ))),
+                                  prefixIcon: const Icon(
+                                    Icons.email,
+                                    color: Colors.grey,
+                                  ),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      borderSide:
+                                          BorderSide(color: Colors.black)),
+                                  labelText: 'Email',
+                                ),
+                                onChanged: (input) => _email = input)),
                         SizedBox(height: 20),
                         Container(
                           height: 50,
@@ -139,7 +150,7 @@ class _LoginState extends State<Login> {
                                     borderRadius: BorderRadius.circular(20.0),
                                   )),
                               obscureText: true,
-                              onSaved: (input) => _password = input),
+                              onChanged: (input) => _password = input),
                         ),
                         SizedBox(
                           height: 20,
@@ -158,7 +169,7 @@ class _LoginState extends State<Login> {
                                             BorderRadius.circular(30.0),
                                         side:
                                             BorderSide(color: Colors.green)))),
-                            onPressed: navigateToHomePage,
+                            onPressed: () => {login()},
                             child: Text(
                               'LOGIN',
                               style: TextStyle(

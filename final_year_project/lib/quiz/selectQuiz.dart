@@ -2,6 +2,9 @@ import 'package:final_year_project/HomePage.dart';
 import 'package:final_year_project/quiz/Quiz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:http/http.dart' as http;
+import '../globals.dart' as globals;
+import 'dart:convert';
 
 class SelectQuiz extends StatefulWidget {
   @override
@@ -15,7 +18,17 @@ class _SelectQuizState extends State<SelectQuiz> {
   }
 
   navigateToTakeQuiz() async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Quiz()));
+    var response =
+        await http.get(Uri.parse('http://10.0.2.2:8000/api/questions'));
+    if (response.statusCode == 200) {
+      globals.questions = json.decode(response.body);
+      print(globals.questions.toString());
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Quiz()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Loading questions failed! Please try again..."),
+      ));
+    }
   }
 
   @override
@@ -60,7 +73,7 @@ class _SelectQuizState extends State<SelectQuiz> {
                     child: Column(
                       children: <Widget>[
                         Text(
-                          '10/10',
+                          globals.result.toString(),
                           style: TextStyle(
                               fontSize: 25, fontWeight: FontWeight.bold),
                         ),
