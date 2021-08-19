@@ -1,5 +1,7 @@
 import 'package:final_year_project/questioner/Forum.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../globals.dart' as globals;
 
 class AddForum extends StatefulWidget {
   @override
@@ -7,8 +9,20 @@ class AddForum extends StatefulWidget {
 }
 
 class _AddForumState extends State<AddForum> {
+  String _question;
   navigateToCreatedForum() async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Forum()));
+    var response = await http.post(Uri.parse('http://10.0.2.2:8000/api/forum'),
+        body: {"question": _question});
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Question sent!"),
+      ));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Forum()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Sending question failed! Please try again..."),
+      ));
+    }
   }
 
   @override
@@ -42,6 +56,7 @@ class _AddForumState extends State<AddForum> {
                   maxLines: 8,
                   decoration: InputDecoration.collapsed(
                       hintText: "Add Question to the moderator !"),
+                  onChanged: (value) => _question = value,
                 ),
               ),
             ),

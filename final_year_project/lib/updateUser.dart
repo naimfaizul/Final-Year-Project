@@ -1,6 +1,9 @@
 import 'package:final_year_project/SucessfullyRegister.dart';
 import 'package:final_year_project/SucessfullyUpdate.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'globals.dart' as globals;
 
 class UpdateUser extends StatefulWidget {
   @override
@@ -8,9 +11,31 @@ class UpdateUser extends StatefulWidget {
 }
 
 class _UpdateUserState extends State<UpdateUser> {
+  String _password = "", _name = globals.name;
   navigateToSuccessfullyUpdated() async {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SucessfullyUpdate()));
+    print(_name);
+    print(_password);
+    if (_password.length != 0) if (_password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Password is too short!"),
+      ));
+      return;
+    }
+
+    var response = await http.post(Uri.parse('http://10.0.2.2:8000/api/update'),
+        body: {"email": globals.email, "password": _password, "name": _name});
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Update Success!"),
+      ));
+      globals.name = _name;
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => SucessfullyUpdate()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Server Error! Please try again..."),
+      ));
+    }
   }
 
   @override
@@ -40,16 +65,17 @@ class _UpdateUserState extends State<UpdateUser> {
                             borderRadius: new BorderRadius.circular(30.0),
                           ),
                           child: TextFormField(
-                            validator: (input) {
-                              if (input.isEmpty) return 'Enter Name';
-                            },
-                            decoration: InputDecoration(
-                                labelText: 'Name',
-                                prefixIcon: Icon(Icons.person),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20.0))),
-                            // onSaved: (input) => _name = input
-                          ),
+                              initialValue: globals.name,
+                              validator: (input) {
+                                if (input.isEmpty) return 'Enter Name';
+                              },
+                              decoration: InputDecoration(
+                                  labelText: "Name",
+                                  prefixIcon: Icon(Icons.person),
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
+                              onChanged: (input) => _name = input),
                         ),
                         SizedBox(
                           height: 10,
@@ -63,41 +89,18 @@ class _UpdateUserState extends State<UpdateUser> {
                             borderRadius: new BorderRadius.circular(30.0),
                           ),
                           child: TextFormField(
-                            validator: (input) {
-                              if (input.isEmpty) return 'Enter Email';
-                            },
-                            decoration: InputDecoration(
-                                labelText: 'Email',
-                                prefixIcon: Icon(Icons.email),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20.0))),
-                            // onSaved: (input) => _email = input
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 15),
-                          width: 350,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: new BorderRadius.circular(30.0),
-                          ),
-                          child: TextFormField(
-                            validator: (input) {
-                              if (input.length < 6)
-                                return 'Minimum 6 Character';
-                            },
-                            decoration: InputDecoration(
-                                labelText: 'Password',
-                                prefixIcon: Icon(Icons.lock),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20.0))),
-                            obscureText: true,
-                            // onSaved: (input) => _password = input
-                          ),
+                              validator: (input) {
+                                if (input.length != 0) if (input.length < 6)
+                                  return 'Minimum 6 Character';
+                              },
+                              decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  prefixIcon: Icon(Icons.lock),
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
+                              obscureText: true,
+                              onChanged: (input) => _password = input),
                         ),
                         SizedBox(
                           height: 30,

@@ -13,6 +13,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'declaration/images.dart';
 import 'package:intl/intl.dart';
 import 'attendance/selectMosque.dart';
+import 'package:http/http.dart' as http;
+import 'globals.dart' as globals;
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,13 +37,34 @@ class _HomePageState extends State<HomePage> {
   }
 
   navigateToSelectQuiz() async {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SelectQuiz()));
+    var response = await http.post(Uri.parse('http://10.0.2.2:8000/api/result'),
+        body: {'email': globals.email});
+    if (response.statusCode == 200) {
+      print(response.body);
+      globals.result = response.body;
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SelectQuiz()));
+    } else {
+      globals.result = r"You have no latest result.";
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SelectQuiz()));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Loading results failed! Please try again..."),
+      ));
+    }
   }
 
   navigateToSelectTuto() async {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SelectTuto()));
+    var response = await http.get(Uri.parse('http://10.0.2.2:8000/api/topics'));
+    if (response.statusCode == 200) {
+      globals.topics = json.decode(response.body);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SelectTuto()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Loading topics failed! Please try again..."),
+      ));
+    }
   }
 
   navigateToStart() async {
@@ -114,7 +138,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.grey[100],
         appBar: AppBar(
           backgroundColor: Colors.green,
-          title: Text('Dashboard'),
+          title: Text("Dashboard | Hi ${globals.name} !"),
           actions: [
             PopupMenuButton<Text>(
               itemBuilder: (context) {

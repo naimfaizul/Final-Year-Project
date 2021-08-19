@@ -2,6 +2,8 @@ import 'package:final_year_project/attendance/attendanceRecord.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:http/http.dart' as http;
+import '../globals.dart' as globals;
 
 class SelectMosque extends StatefulWidget {
   @override
@@ -9,9 +11,22 @@ class SelectMosque extends StatefulWidget {
 }
 
 class _SelectMosqueState extends State<SelectMosque> {
+  String _location;
   navigateToAttendanceRecord() async {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AttendanceRecord()));
+    var response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/api/attendance'),
+        body: {"email": globals.email, "location": _location});
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Attendance recorded!"),
+      ));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => AttendanceRecord()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Recording attendance failed! Please try again..."),
+      ));
+    }
   }
 
   @override
@@ -47,6 +62,7 @@ class _SelectMosqueState extends State<SelectMosque> {
                   maxLines: 8,
                   decoration: InputDecoration.collapsed(
                       hintText: "Add Your Current Location"),
+                  onChanged: (value) => _location = value,
                 ),
               ),
             ),

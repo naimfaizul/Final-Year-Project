@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../globals.dart' as globals;
+import 'dart:convert';
 
 class Topic1 extends StatefulWidget {
   @override
@@ -39,7 +41,7 @@ class _Topic1State extends State<Topic1> {
                                 Container(
                                   margin: EdgeInsets.all(1),
                                   child: Text(
-                                    'title topic tu',
+                                    globals.topic['title'],
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold),
@@ -50,7 +52,7 @@ class _Topic1State extends State<Topic1> {
                                 ),
                                 Container(
                                     margin: EdgeInsets.all(1),
-                                    child: Text('data '))
+                                    child: Text(globals.topic['note']))
                               ],
                             ),
                           ),
